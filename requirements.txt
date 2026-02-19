@@ -1,0 +1,9 @@
+requests
+pandas
+faker
+uuid
+psycopg2-binary
+tqdm
+python-dotenv
+fastapi
+uvicorn
