@@ -1,0 +1,15 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+*.py[cod]
+*$py.class
+.env.local
+.venv
+venv
+node_modules
+*.log
+.DS_Store
+dist
+build
+*.egg-info

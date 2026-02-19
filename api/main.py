@@ -1,13 +1,24 @@
 import os
 import psycopg2
 import requests
+from datetime import datetime
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
 load_dotenv()
 
 app = FastAPI(title="Blood Donation Hybrid RAG API")
+
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ---------- ENV ----------
 DB = {
@@ -29,6 +40,14 @@ class SearchRequest(BaseModel):
     city: str
     blood_type: str   # example: blood_o_pos
     query: str
+    user_lat: float
+    user_lon: float
+
+
+class FeedbackRequest(BaseModel):
+    hospital: str
+    rating: bool
+    comment: str = ""
     user_lat: float
     user_lon: float
 
@@ -154,3 +173,54 @@ def recommend(req: SearchRequest):
     return {
         "recommendations": hospitals
     }
+
+
+@app.post("/feedback")
+def submit_feedback(req: FeedbackRequest):
+    """
+    Store user feedback about hospital recommendations.
+    """
+    try:
+        conn = psycopg2.connect(**DB)
+        cur = conn.cursor()
+
+        # Create feedback table if it doesn't exist
+        create_table_sql = """
+        CREATE TABLE IF NOT EXISTS feedback (
+            id SERIAL PRIMARY KEY,
+            hospital TEXT NOT NULL,
+            rating BOOLEAN NOT NULL,
+            comment TEXT,
+            lat FLOAT,
+            lon FLOAT,
+            created_at TIMESTAMP DEFAULT NOW()
+        );
+        """
+        cur.execute(create_table_sql)
+
+        # Insert feedback
+        insert_sql = """
+        INSERT INTO feedback (hospital, rating, comment, lat, lon, created_at)
+        VALUES (%s, %s, %s, %s, %s, NOW());
+        """
+        cur.execute(insert_sql, (
+            req.hospital,
+            req.rating,
+            req.comment if req.comment else None,
+            req.user_lat,
+            req.user_lon
+        ))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return {
+            "status": "success",
+            "message": "Feedback recorded successfully"
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
