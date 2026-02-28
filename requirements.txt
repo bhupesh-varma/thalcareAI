@@ -8,3 +8,11 @@ python-dotenv
 fastapi
 uvicorn
 matplotlib
+sqlalchemy
+aiosmtplib
+twilio
+apscheduler
+python-jose
+passlib[bcrypt]
+psycopg2-binary
+argon2-cffi
