@@ -7,12 +7,11 @@ interface Hospital {
   icu: number;
   blood: number;
   distance: number;
-  explanation: string;
 }
 
 interface HospitalCardProps {
   hospital: Hospital;
-  onSelect: (hospital: Hospital) => void;
+  onSelect?: (hospital: Hospital) => void;
 }
 
 const HospitalCard = ({ hospital, onSelect }: HospitalCardProps) => {
@@ -55,18 +54,15 @@ const HospitalCard = ({ hospital, onSelect }: HospitalCardProps) => {
         </div>
       </div>
 
-      <div className="mb-4">
-        <p className="text-sm text-gray-700 leading-relaxed italic">
-          "{hospital.explanation}"
-        </p>
-      </div>
 
-      <button
-        onClick={() => onSelect(hospital)}
-        className="w-full btn-primary py-3 font-semibold"
-      >
-        Select Hospital
-      </button>
+      {onSelect && (
+        <button
+          onClick={() => onSelect(hospital)}
+          className="w-full btn-primary py-3 font-semibold"
+        >
+          Select Hospital
+        </button>
+      )}
     </div>
   );
 };
