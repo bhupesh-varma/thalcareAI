@@ -10,8 +10,8 @@ import './App.css';
 import React from 'react';
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-  const auth = useAuth();
-  return auth.token ? children : <Navigate to="/login" replace />;
+  const token = localStorage.getItem('token');
+  return token ? children : <Navigate to="/login" replace />;
 };
 
 function App() {
