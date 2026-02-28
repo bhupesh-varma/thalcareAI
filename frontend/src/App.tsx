@@ -10,8 +10,13 @@ import './App.css';
 import React from 'react';
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-  const token = localStorage.getItem('token');
-  return token ? children : <Navigate to="/login" replace />;
+  const auth = useAuth();
+  
+  if (auth.isLoading) {
+    return <div className="flex items-center justify-center min-h-screen"><span>Loading...</span></div>;
+  }
+  
+  return auth.token ? children : <Navigate to="/login" replace />;
 };
 
 function App() {
