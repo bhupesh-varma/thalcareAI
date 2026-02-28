@@ -6,10 +6,10 @@ import os
 
 load_dotenv()
 
-SECRET_KEY = os.getenv("JWT_SECRET")
-ALGORITHM = "HS256"
+    SECRET_KEY = os.getenv("JWT_SECRET")
+    ALGORITHM = "HS256"
 
-pwd_context = CryptContext(schemes=["bycrypt"], deprecated="auto")
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password:str):
     return pwd_context.hash(password)
