@@ -21,7 +21,7 @@ const Login = () => {
         email,
         password,
       });
-      const token = response.data.token;
+      const token = response.data.access_token;
       if (token) {
         login(token);
         navigate('/dashboard');
@@ -81,6 +81,15 @@ const Login = () => {
         >
           Emergency Access
         </button>
+        <p className='mt-4 text-center text-s, text-gray-600'>
+          Dont have an account? {" "}
+          <span
+          onClick={() => navigate('/register')}
+          className="text-red-600 hover:underline cursor-pointer"
+          >
+            Create One
+          </span>
+        </p>
       </div>
     </div>
   );
